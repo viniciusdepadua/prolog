@@ -1,0 +1,33 @@
+% Fatos
+
+iteano('Mateus').
+iteano('Vinicius').
+iteano('Pessoa').
+iteano('Fulano').
+
+eletiva('Mateus', 300).
+eletiva('Vinicius', 288).
+eletiva('Pessoa', 270).
+eletiva('Fulano', 300).
+
+tg('Mateus').
+tg('Vinicius').
+tg('Pessoa').
+tg('Fulano').
+
+sobreviveu('Mateus', 'ITA').
+sobreviveu('Vinicius', 'ITA').
+sobreviveu('Pessoa', 'ITA').
+
+h8('Mateus').
+h8('Vinicius').
+h8('Pessoa').
+h8('Fulano').
+
+% Regras
+
+eletivaok(X) :- eletiva(X,Y), Y >= 288.
+
+qualificado(X) :- eletivaok(X), iteano(X), h8(X), tg(X), iteano(X), sobreviveu(X,'ITA').
+
+diploma(X,'ITA') :- iteano(X), qualificado(X).
