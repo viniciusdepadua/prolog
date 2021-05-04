@@ -1,0 +1,15 @@
+% predicados auxiliares, diz se a lista L3 é a concatenação de L1 e L2
+
+concat([],L1,L1) :- !.
+concat([X|L1],L2,[X|L3]):-concat(L1,L2,L3).
+
+
+% uma lista com um único elemento é sua própia reversa
+
+inverte([X],[X]) :- !.
+% L3 é a reversa de [X|L1] se L2 é a reversa de L1 e L2 com [X] concatenado a L3
+
+inverte([X | L1], L3) :- inverte(L1,L2), concat(L2,[X],L3).
+
+% Uma lista é palindromo se ela invertida é ela mesma.
+palindromo(L) :- inverte(L,L).
