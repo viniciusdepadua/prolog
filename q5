@@ -1,0 +1,66 @@
+% b representa as peças brancas e p representa as peças pretas, enquanto v representa o espaço vazio
+estado_final([v, b, p, p, b]).
+estado_final([b, p, p, b, v]).
+estado_final([b, v, p, p, b]).
+estado_final([b, p, v, p, b]).
+
+% todas as possibilidades de mudança de estado.
+mover_estado([v, X1, X2, X3, X4], [X2, X1, v, X3, X4]).
+mover_estado([X1, v, X2, X3, X4], [X1, X3, X2, v, X4]).
+mover_estado([X1, X2, v, X3, X4], [v, X2, X1, X3, X4]).
+mover_estado([X1, X2, v, X3, X4], [X1, X2, X4, X3, v]).
+mover_estado([X1, X2, X3, v, X4], [X1, v, X3, X2, X4]).
+mover_estado([X1, X2, X3, X4, v], [X1, X2, v, X4, X3]).
+mover_estado([v, X1, X2, X3, X4], [X1, v, X2, X3, X4]).
+mover_estado([X1, v, X2, X3, X4], [v, X1, X2, X3, X4]).
+mover_estado([X1, v, X2, X3, X4], [X1, X2, v, X3, X4]).
+mover_estado([X1, X2, v, X3, X4], [X1, v, X2, X3, X4]).
+mover_estado([X1, X2, v, X3, X4], [X1, X2, X3, v, X4]).
+mover_estado([X1, X2, X3, v, X4], [X1, X2, v, X3, X4]).
+mover_estado([X1, X2, X3, v, X4], [X1, X2, X3, X4, v]).
+mover_estado([X1, X2, X3, X4, v], [X1, X2, X3, v, X4]).
+
+
+%predicados auxiliares
+
+% diz se a lista L3 é a concatenação de L1 e L2
+concat([],L1,L1) :- !.
+concat([X|L1],L2,[X|L3]) :- concat(L1,L2,L3).
+
+% verifica se X pertence a lista L
+
+member(X, [X|_]) :- !.
+member(X, [_|L]) :- member(X, L).
+
+% Predicado para imprimir os estados da nossa solução
+
+show_solution([Estado_inicial]) :-
+    write('Estado Inicial: '),
+    write(Estado_inicial),
+    write('\n'),!.
+show_solution([N | Tail]) :-
+    show_solution(Tail),
+    write('Novo estado: '),
+    write(N),
+    write('\n').
+
+% Checa se o estado M pode ser o próximo estado da nossa trajetoria
+trajetoria_valida([N | Tail], M) :-
+    mover_estado(N,M),
+    not(
+        member(
+            M,[N | Tail])).
+
+
+%Encontra os estados da solução Solution por meio de uma busca em largura
+
+breadthfirst( [ [Node | Path] | _], [Node | Path] ) :-
+    estado_final(Node),
+    !.
+breadthfirst( [  [N | Path] | Paths], Solution) :-
+    bagof([M,N | Path], trajetoria_valida([N | Path], M), NewPaths),
+    concat( Paths, NewPaths, Pathsl), !,
+    breadthfirst( Pathsl, Solution);
+    breadthfirst( Paths, Solution).
+
+solve(Estado_inicial) :- breadthfirst([ [Estado_inicial] ], Solution), show_solution(Solution).
